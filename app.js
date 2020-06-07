@@ -7,7 +7,7 @@ const multer = require('multer');
 const path = require('path');
 
 //routes
-const userRoutes = require('./routes/users');
+const userRoutes = require('./routes/user');
 
 
 const fileStorage = multer.diskStorage({
