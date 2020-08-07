@@ -9,7 +9,7 @@ exports.signUp=(req,res)=>{
     const password=req.body.password;
     User.findOne({email:email}).then(usr=>{
         if(usr){
-            res.status(200).json({message:'User already exists!'});
+            res.status(409).json({message:'User already exists!'});
         }
         becrypt.hash(password,12).then(hash=>{
             const user=new User({
@@ -51,7 +51,9 @@ exports.signIn=(req,res,next)=>{
             email:usr.email,
             userId:usr._id.toString()
         },'zeek-key',{expiresIn:'1h'});
-        res.status(200).json({token:token,userId:usr._id.toString()});
+        exp = new Date();
+        exp = exp.getTime()+60*60*1000;
+        res.status(200).json({email : email, token:token, userId:usr._id.toString(), expiration: exp , message:"User logged in."});
     })
     .catch(err=>{
         res.status(500).json({message:'Error occur'});
