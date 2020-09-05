@@ -5,10 +5,12 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const path = require('path');
+const socket = require('./socket');
 
 //routes
 const userRoutes = require('./routes/user');
 const portfolioRoutes = require('./routes/portfolio');
+const { Socket } = require('dgram');
 
 
 const fileStorage = multer.diskStorage({
@@ -39,5 +41,6 @@ app.use('/images',express.static(path.join(__dirname,'images')));
 
 mongoose.connect('mongodb+srv://sohail:987654321@cluster0-qngvp.mongodb.net/test_lab?retryWrites=true&w=majority').then(result=>{
     const server=app.listen(process.env.PORT || 5000,()=>{
+        socket(server);        
     });
 }).catch(err=>console.log(err));
