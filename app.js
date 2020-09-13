@@ -6,11 +6,12 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const path = require('path');
 const socket = require('./socket');
+const redis = require('redis');
 
 //routes
 const userRoutes = require('./routes/user');
 const portfolioRoutes = require('./routes/portfolio');
-const { Socket } = require('dgram');
+const testLab = require('./routes/testLab');
 
 
 const fileStorage = multer.diskStorage({
@@ -33,8 +34,9 @@ app.use((req,res,next)=>{
 
 //test 
 
-app.use('/user',userRoutes);
+app.use('/user', userRoutes);
 app.use('/portfolio', portfolioRoutes);
+app.use('/testLab', testLab)
 
 app.use(multer({storage:fileStorage}).single('image'));
 app.use('/images',express.static(path.join(__dirname,'images')));

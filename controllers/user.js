@@ -34,7 +34,6 @@ exports.signUp=(req,res)=>{
 exports.signIn=(req,res,next)=>{
     const email=req.body.email;
     const password=req.body.password;
-    console.log(email,password);
     let usr;
     User.findOne({email:email}).then(user=>{
         if(!user){
@@ -53,7 +52,7 @@ exports.signIn=(req,res,next)=>{
         },'zeek-key',{expiresIn:'1h'});
         exp = new Date();
         exp = exp.getTime()+60*60*1000;
-        res.status(200).json({email : email, token:token, userId:usr._id.toString(), expiration: exp , message:"User logged in."});
+        res.status(200).json({name: usr.name,email : email, token:token, userId:usr._id.toString(), expiration: exp , message:"User logged in."});
     })
     .catch(err=>{
         res.status(500).json({message:'Error occur'});

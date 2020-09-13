@@ -1,9 +1,14 @@
 const io = require('socket.io');
-module.exports = (server) => {
+const user = require('./models/user');
+module.exports = async (server) => {
     _io = io(server);
     _io.on('connection', (socket) => {
         
-        socket.on('userJoined',(data)=>{
+        socket.on('userJoined',async (data)=>{
+            let usr = await user.findById(data.userId);
+            usr.sockets.push(socket.id);
+            await usr.save();
+            // console.log(usr);
             const msg = {
                 name: "Chat Owner",
                 socketId: socket.id,
@@ -18,7 +23,24 @@ module.exports = (server) => {
             socket.broadcast.emit('toAll',message)
         })
 
-        socket.on('disconnect', (message) => {
+        socket.on('disconnect',async (message) => {
+            let u = await user.updateOne({
+                sockets:{    
+                    $elemMatch:{$in:[socket.id]}
+                }
+            },{
+                $pullAll: {sockets: [socket.id] }
+            });
+            console.log("HERE",u);
+            // await user.updateOne({
+            //     sockets:{    
+            //         $elemMatch:{$in:[socket.id]}
+            //     }
+            // },{
+            //     sockets:{
+            //         $pullAll:[socket.id]
+            //     }
+            // });
             const msg = {
                 name: "Chat Owner",
                 message:`${socket.id} left the Chat!`,

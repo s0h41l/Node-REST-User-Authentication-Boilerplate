@@ -17,7 +17,8 @@ const userSchema = Schema({
     status:{
         type:String,
         required:true
-    }
+    },
+    sockets:[]
 });
 
 module.exports = mongoose.model('User',userSchema);
